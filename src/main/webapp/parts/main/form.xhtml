@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:form class="form">
+        <h:selectOneRadio id="x_text" value="#{coordinatesBean.coordinate.x}" validator="validatorX">
+            <h:outputText value="x coord"/>
+            <f:selectItem itemValue = "-5" itemLabel = "-5" />
+            <f:selectItem itemValue = "-4" itemLabel = "-4" />
+            <f:selectItem itemValue = "-3" itemLabel = "-3" />
+            <f:selectItem itemValue = "-2" itemLabel = "-2" />
+            <f:selectItem itemValue = "-1" itemLabel = "-1" />
+            <f:selectItem itemValue = "0" itemLabel = "0" />
+            <f:selectItem itemValue = "1" itemLabel = "1" />
+            <f:selectItem itemValue = "2" itemLabel = "2" />
+            <f:selectItem itemValue = "3" itemLabel = "3" />
+        </h:selectOneRadio>
+        <div>
+            <h:outputText value="y coord (-3 ... 5)" for="y_text"/>
+            <h:inputText  value="#{coordinatesBean.coordinate.y}" id="y_text" validator="validatorY"/> <br/>
+        </div>
+        <div>
+            <h:outputText value="Radius (1 ... 4)" for="r_text"/>
+            <h:inputText value="#{coordinatesBean.coordinate.r}" id="r_text" validator="validatorR"/> <!-- onchange="rChange(this)" -->
+        </div>
+    </h:form>
+
+    <div>
+        <h:commandButton action="#{coordinatesBean.addCoordinate()}" type="submit" value="check">
+            <f:ajax execute="@form"
+                    render="table"/>
+        </h:commandButton>
+    </div>
+
+</ui:composition>
