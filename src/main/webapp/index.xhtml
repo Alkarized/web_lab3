@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 <h:head>
-    <h:outputScript library="js" name="jquery-3.6.0.min.js"/>
-    <h:outputScript library="js" name="svg.js"/>
+    <h:outputStylesheet library="css" name="main_page.css"/>
+    <title>JSF-херня</title>
 </h:head>
 <h:body>
-    <ui:composition template="WEB-INF/templates/common.xhtml">
-        
-        <ui:insert>
-            <ui:include src="WEB-INF/parts/main/graph.xhtml"/>
-        </ui:insert>
+    <ui:insert>
+        <ui:include src="WEB-INF/templates/header.xhtml"/>
+    </ui:insert>
 
-        <ui:insert>
-            <ui:include src="WEB-INF/parts/main/form.xhtml"/>
-        </ui:insert>
+    <ui:insert name="main_graph">
+        <ui:include src="WEB-INF/parts/main/graph.xhtml"/>
+    </ui:insert>
 
-        <ui:insert>
-            <ui:include src="WEB-INF/parts/main/table.xhtml"/>
-        </ui:insert>
+    <ui:insert name="main_from">
+        <ui:include src="WEB-INF/parts/main/form.xhtml"/>
+    </ui:insert>
 
-    </ui:composition>
+    <ui:insert name="main_table">
+        <ui:include src="WEB-INF/parts/main/table.xhtml"/>
+    </ui:insert>
+
+    <h:outputScript library="js" name="jquery-3.6.0.min.js"/>
+
 </h:body>
 </html>
