@@ -11,37 +11,42 @@
         <h:message for="y_text" id="y_error_message"/> <br/>
         <h:message for="r_text" id="r_error_message"/>
 
-        <h:selectOneRadio id="x_text" value="#{coordinatesBean.coordinate.x}" required="true" validator="validatorX"
+        <h:selectOneRadio styleClass="form-x-all" id="x_text" value="#{coordinatesBean.coordinate.x}" required="true" validator="validatorX"
                           requiredMessage="Вы не выбрали значение X"
                           converterMessage="Выбрано некорректное значение X">
             <h:outputLabel value="x coord"/>
-            <f:selectItem itemValue="-5" itemLabel="-5"/>
-            <f:selectItem itemValue="-4" itemLabel="-4"/>
-            <f:selectItem itemValue="-3" itemLabel="-3"/>
-            <f:selectItem itemValue="-2" itemLabel="-2"/>
-            <f:selectItem itemValue="-1" itemLabel="-1"/>
-            <f:selectItem itemValue="0" itemLabel="0"/>
-            <f:selectItem itemValue="1" itemLabel="1"/>
-            <f:selectItem itemValue="2" itemLabel="2"/>
-            <f:selectItem itemValue="3" itemLabel="3"/>
+            <f:selectItem itemValue="-5" itemLabel="-5" styleClass="form-x-input"/>
+            <f:selectItem itemValue="-4" itemLabel="-4" styleClass="form-x-input"/>
+            <f:selectItem itemValue="-3" itemLabel="-3" styleClass="form-x-input"/>
+            <f:selectItem itemValue="-2" itemLabel="-2" styleClass="form-x-input"/>
+            <f:selectItem itemValue="-1" itemLabel="-1" styleClass="form-x-input"/>
+            <f:selectItem itemValue="0" itemLabel="0" styleClass="form-x-input"/>
+            <f:selectItem itemValue="1" itemLabel="1" styleClass="form-x-input"/>
+            <f:selectItem itemValue="2" itemLabel="2" styleClass="form-x-input"/>
+            <f:selectItem itemValue="3" itemLabel="3" styleClass="form-x-input"/>
         </h:selectOneRadio>
 
         <h:outputLabel value="y coord (-3 ... 5)"/>
-        <h:inputText value="#{coordinatesBean.coordinate.y}" id="y_text" required="true"
+        <h:inputText styleClass="form-y-input" value="#{coordinatesBean.coordinate.y}" id="y_text" required="true"
                      requiredMessage="Вы не ввели значение Y"
                      converterMessage="Введено некорректное значение Y">
             <f:validator for="y_text" validatorId="validatorY"/>
         </h:inputText>
 
         <h:outputLabel value="Radius (1 ... 4)" />
-        <h:inputText value="#{coordinatesBean.coordinate.r}" id="r_text" required="true"
+        <h:inputText value="#{coordinatesBean.coordinate.r}" id="r_text" required="true" onchange="changeR(this)"
                      requiredMessage="Вы не ввели значение R"
                      converterMessage="Введено некорректное значение R">
             <f:validator for="r_text" validatorId="validatorR"/>
-        </h:inputText> <!--onchange="rChange(this)"-->
+        </h:inputText>
 
-        <h:commandButton action="#{coordinatesBean.addCoordinate()}" type="submit" value="check">
-            <f:ajax execute="@form" render="x_error_message y_error_message r_error_message table"/> <!--render="x_error_message;y_error_message;r_error_message;table;"-->
+        <h:commandButton class="submit-button" action="#{coordinatesBean.addCoordinate()}" type="submit" value="check" id="send_requst_button">
+            <f:ajax execute="@form" render="x_error_message y_error_message r_error_message table"
+                    onevent="(data) =>{
+                        if (data.status === 'success'){
+                            rerender()
+                        }
+                    }"/>
         </h:commandButton>
 
     </h:form>

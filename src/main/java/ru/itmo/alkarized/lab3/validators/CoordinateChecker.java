@@ -9,6 +9,6 @@ public class CoordinateChecker {
         int x = coordinate.getX();
         float y = coordinate.getY();
         float r = coordinate.getR();
-        coordinate.setIsHit((y >= 0 && x <= 0 && x >= -r && y <= r / 2) || (pow(x, 2) + pow(y, 2) <= pow(r, 2) && y >= 0 && x >= 0) || (x <= 0 && y <= 0 && y >= -0.5 * x - r / 2));
+        coordinate.setHit((y >= 0 && x <= 0 && x >= -r && y <= r / 2) || (pow(x, 2) + pow(y, 2) <= pow(r, 2) && y >= 0 && x >= 0) || (x <= 0 && y <= 0 && y >= -0.5 * x - r / 2));
     }
 }

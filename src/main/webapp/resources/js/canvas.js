@@ -2,11 +2,14 @@ var RECT_SIZE = 500
 var OFFSET = RECT_SIZE/16
 var LINE_LENGTHS = RECT_SIZE - 2*OFFSET //Длинна всей оси без отступа сбоку
 var RADIUS_LENGTH = LINE_LENGTHS/4 //Расстояние в px половины R
-var radius = "3.9"; // todo добавить чтение радиуса
+var radius = "2"; // todo добавить чтение радиуса
 var length = RECT_SIZE/100
 
 var canvas = document.getElementById("graph");
+//var canvasOfNewPoint = document.getElementById("new_point")
+
 var ctx = canvas.getContext('2d');
+//var ctx_new_point = canvas.getContext("2d")
 const MAIN_RECT = canvas.getBoundingClientRect()
 
 class Coordinate{
@@ -19,9 +22,11 @@ class Coordinate{
 }
 
 var arrayOfCoords = []
-
 canvas.width = RECT_SIZE;
 canvas.height = RECT_SIZE;
+
+/*canvasOfNewPoint.width = RECT_SIZE;
+canvasOfNewPoint.height = RECT_SIZE;*/
 
 ctx.lineCap = "round"
 ctx.lineWidth = 1
@@ -32,12 +37,12 @@ function xFromCanvasToNoraml(coord){
 }
 
 function yFromCanvasToNoraml(coord){
-	let ans = Math.round((-2)*radius*(coord - RECT_SIZE/2)/(LINE_LENGTHS));
+	let ans = (-2)*radius*(coord - RECT_SIZE/2)/(LINE_LENGTHS)
 	return ans
 }
 
 function xFromNormalToCanvas(coord){
-	let ans = (coord*LINE_LENGTHS)/(2*radius) + RECT_SIZE/2; 
+	let ans = (coord*LINE_LENGTHS)/(2*radius) + RECT_SIZE/2;
 	return ans
 }
 
@@ -109,8 +114,9 @@ function paintLineLenghtX(x, y, line_length){
 	ctx.moveTo(x, y - line_length)
 	ctx.lineTo(x, y + line_length)
 	ctx.stroke();
-	ctx.closePath()
 	ctx.lineWidth = backWidth
+	ctx.closePath()
+
 }
 //Рисуем черточку разметки по y
 function paintLineLenghtY(x, y, line_length){
@@ -120,8 +126,9 @@ function paintLineLenghtY(x, y, line_length){
 	ctx.moveTo(x - line_length, y )
 	ctx.lineTo(x + line_length, y)
 	ctx.stroke();
-	ctx.closePath()
 	ctx.lineWidth = backWidth
+	ctx.closePath()
+
 }
 //Рисуем слова разметки 
 function paintNumber(number, x, y, fillColor) {
@@ -130,7 +137,7 @@ function paintNumber(number, x, y, fillColor) {
 
 	ctx.textAlign = "center";
 	ctx.font = "15px Comic Sans MS"
-	ctx.fillText(number, x, y)
+	ctx.fillText(parseFloat(number).toFixed(1), x, y)
 
 	ctx.fillStyle = backColor
 }
@@ -160,19 +167,22 @@ function paintXCoordinateLine(){
 	}
 }
 
-function drawCoord(coordinate){
-	let colorBack = ctx.fillStyle
-
-	if (coordinate.isHit){
-		ctx.fillStyle = "green"
+function drawCoord(coordinate, context){
+	context.beginPath()
+	let colorBack = context.fillStyle
+	let strokeBack = context.strokeStyle;
+	context.strokeStyle = "black";
+	if (coordinate.isHit == "true"){
+		context.fillStyle = "green"
 	} else {
-		ctx.fillStyle = "red"
+		context.fillStyle = "red"
 	}
-
-	ctx.arc(coordinate.x, coordinate.y, RECT_SIZE/100, 0, 2*Math.PI)
-	ctx.fill()
-
-	ctx.fillStyle = colorBack;
+	context.arc(xFromNormalToCanvas(coordinate.x), yFromNormalToCanvas(coordinate.y), RECT_SIZE/100, 0, 2*Math.PI)
+	context.fill()
+	context.stroke()
+	context.strokeStyle = strokeBack
+	context.fillStyle = colorBack;
+	context.closePath()
 }
 
 function colorFillObject(fillStyle = "black", strokeStyle = "black", lineWidth = "1", object = ()=>{}) {
@@ -193,7 +203,7 @@ function colorFillObject(fillStyle = "black", strokeStyle = "black", lineWidth =
 
 function drawAllCoords(){
 	arrayOfCoords.forEach(elem =>{
-		drawCoord(elem);
+		drawCoord(elem, ctx);
 	})
 }
 
@@ -213,16 +223,76 @@ function draw() {
 }
 
 canvas.addEventListener("mousedown", e => {
-	let xCor = e.clientX - MAIN_RECT.left
-	let yCor = e.clientY - MAIN_RECT.top
+	let xCor = Math.round(xFromCanvasToNoraml(e.clientX - MAIN_RECT.left))
+	let yCor = yFromCanvasToNoraml(e.clientY - MAIN_RECT.top).toFixed(3)
 	let rCor = radius
-	clearArea()
-	draw()
+	let x_table = document.querySelectorAll("input[type=radio]")
+	x_table.forEach(e =>{
+		if (e.id.match("x_text")){
+			e.checked = false
+			if (e.value == xCor){
+				e.checked = true
+			}
+		}
+	})
+	document.querySelector(".form-y-input").value = yCor;
+	let button = document.querySelector(".submit-button");
+	button.click()
 })
 
-function rChange(r){
-	alert(r.value)
+/*canvasOfNewPoint.addEventListener("mousemove", e =>{
+	let xCor = Math.round(xFromCanvasToNoraml(e.clientX - MAIN_RECT.left))
+	let yCor = yFromCanvasToNoraml(e.clientY - MAIN_RECT.top)
+	let rCor = radius
+	//ctx_new_point.clearRect(0,0, RECT_SIZE, RECT_SIZE)
+	alert("test")
+	//drawGhostCoordinate(new Coordinate(xCor, yCor, rCor, NaN))
+})*/
+
+/*
+function drawGhostCoordinate(coordinate){
+	drawCoord(coordinate, ctx_new_point)
 }
+*/
+
+function changeR(r_node){
+	if ( 1 < r_node.value && r_node.value < 4){
+		radius = parseFloat(r_node.value).toFixed(1)
+		clearArea()
+		draw()
+	} else {
+		r_node.value = radius;
+	}
+}
+
+function rerender(){
+	let table = document.getElementById("table")
+	let len = table.children[1].children.length;
+	if (len > 0 && table.children[1].children[len - 1].children[0].innerText.trim().replace(',','.') !== ""){
+
+		arrayOfCoords.push(new Coordinate(table.children[1].children[len - 1].children[0].innerText.trim(),
+			parseFloat(table.children[1].children[len - 1].children[1].innerText.trim().replace(',','.')),
+			parseFloat(table.children[1].children[len - 1].children[2].innerText.trim().replace(',','.')),
+			table.children[1].children[len - 1].children[3].innerText.trim()))
+		drawCoord(arrayOfCoords[arrayOfCoords.length - 1], ctx)
+	}
+}
+
+function getAllCoordsFromTable(){
+	let table = document.getElementById("table")
+	let len = table.children[1].children.length;
+	let trs = table.children[1].children;
+	for (let i = 0; i < len; i++){
+		if (trs[i].children[0].innerText.trim() !== "") {
+			arrayOfCoords.push(new Coordinate(trs[i].children[0].innerText.trim(),
+				parseFloat(trs[i].children[1].innerText.trim().replace(',','.')),
+				parseFloat(trs[i].children[2].innerText.trim().replace(',','.')),
+				trs[i].children[3].innerText.trim()))
+		}
+	}
+}
+
 window.onload = () =>{
+	getAllCoordsFromTable()
 	draw()
 }

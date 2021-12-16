@@ -14,7 +14,7 @@ public class ValidatorY implements Validator {
         float y = Float.parseFloat(o.toString());
         if (!(-3 < y && y < 5 )){
             throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, null,
-                    "Введенное число выпадает из разрешенных значений X"));
+                    "Введенное число выпадает из разрешенных значений Y"));
         }
     }
 }

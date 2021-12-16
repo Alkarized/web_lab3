@@ -18,7 +18,6 @@ public class ValidatorX implements Validator {
     @Override
     public void validate(FacesContext facesContext, UIComponent uiComponent, Object o) throws ValidatorException {
         int x = Integer.parseInt(o.toString());
-        System.out.println(x);
         if (allowedX.stream().noneMatch(elem -> elem == x)) {
             throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, null,
                     "Введенное число выпадает из разрешенных значений X"));

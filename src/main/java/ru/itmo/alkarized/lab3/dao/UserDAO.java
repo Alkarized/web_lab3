@@ -1,35 +1,46 @@
 package ru.itmo.alkarized.lab3.dao;
 
 import lombok.Getter;
-import ru.itmo.alkarized.lab3.entity.TableData;
+import ru.itmo.alkarized.lab3.entity.Coordinate;
 import ru.itmo.alkarized.lab3.factory.PersistenceFactory;
 
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import javax.persistence.EntityManager;
 import java.io.Serializable;
 import java.util.List;
 
-@Named
-@SessionScoped
 public class UserDAO implements SimpleDAO, Serializable {
 
-    @Inject @Getter
-    private PersistenceFactory factory;
+    @Getter
+    private final PersistenceFactory factory = new PersistenceFactory();
 
     @Override
-    public TableData getCoordsById(Long id) {
-        return null;
+    public List<Coordinate> getAllCoords() {
+        List<Coordinate> list = null;
+        EntityManager em = factory.getFactory().createEntityManager();
+        try{
+            list= em.createQuery("SELECT c FROM Coordinate c", Coordinate.class).getResultList();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        em.close();
+        return list;
     }
 
     @Override
-    public List<TableData> getAllCoords() {
-        return null;
-    }
-
-    @Override
-    public boolean addNewCoords(TableData tableData) {
+    public boolean addNewCoords(Coordinate coordinate) {
+        EntityManager em = factory.getFactory().createEntityManager();
+        try{
+            em.getTransaction().begin();
+            em.persist(coordinate);
+            em.getTransaction().commit();
+            return true;
+        } catch (Exception e){
+            System.err.println("Error in BD - get Coord");
+            em.getTransaction().rollback();
+        }
+        em.close();
         return false;
+
     }
 
 }
